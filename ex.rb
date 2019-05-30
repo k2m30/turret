@@ -33,7 +33,8 @@ def sign(n)
   n <=> 0
 end
 
-$grbl = Serial.new '/dev/cu.SLAB_USBtoUART', 115200
+serial_port = ENV['RPI'].nil? ? '/dev/cu.SLAB_USBtoUART' : ' /dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0'
+$grbl = Serial.new serial_port, 115200
 # $grbl = Serial.new '/dev/cu.usbmodem14201', 115200
 $grbl.write("$$\n")
 get_response
