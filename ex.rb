@@ -13,10 +13,10 @@ def read_grbl
   response
 end
 
-def get_response
+def get_response(print_response = true)
   sleep 0.03
   response = read_grbl.gsub("ok", '')
-  print response
+  print response if print_response
 end
 
 def normalize(val)
@@ -50,31 +50,31 @@ work do
     y = normalize(value[1][:y])
     f = Math.sqrt(x ** 2 + y ** 2)
     command = "$J=G91 X#{-30 * x / 24576} Y#{30 * y / 24576} F#{f * 2.0}\n"
-    p command
+    # p command
     $grbl.write command unless f.zero?
     get_response
 
     $grbl.write "?\n"
-    get_response
+    get_response false
   }
   on controller, :button_dpad_left => proc { |*value|
     puts "ring down"
-    $grbl.write "M3\n"
+    $grbl.write "M4\n"
     get_response
   }
   on controller, :button_up_dpad_left => proc { |*value|
     puts "ring up"
-    $grbl.write "M4\n"
+    $grbl.write "M3\n"
     get_response
   }
   on controller, :button_dpad_up => proc { |*value|
     puts "smoke down"
-    $grbl.write "M7\n"
+    $grbl.write "M8\n"
     get_response
   }
   on controller, :button_up_dpad_up => proc { |*value|
     puts "smoke up"
-    $grbl.write "M8\n"
+    $grbl.write "M9\n"
     get_response
   }
 end
