@@ -45,18 +45,20 @@ get_response
 sleep 5
 
 work do
-  on controller, :joystick_0 => proc { |*value|
+  on controller, joystick_0: proc {|*value|
     # puts "#{value}"
     x = normalize(value[1][:x])
     y = normalize(value[1][:y])
     f = Math.sqrt(x ** 2 + y ** 2)
     command = "$J=G91 X#{-30 * x / 24576} Y#{30 * y / 24576} F#{f * 2.0}\n"
-    # p command
-    $grbl.write command unless f.zero?
-    get_response
+    unless f.zero?
+      p command
+      $grbl.write command
+      get_response
+      $grbl.write "?\n"
+      get_response false
+    end
 
-    $grbl.write "?\n"
-    get_response false
   }
   on controller, :button_dpad_left => proc { |*value|
     puts "ring down"
